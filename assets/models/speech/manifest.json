@@ -1,0 +1,99 @@
+{
+  "runtime": "Vosk 0.3.45 win64",
+  "runtime_url": "https://github.com/alphacep/vosk-api/releases/download/v0.3.45/vosk-win64-0.3.45.zip",
+  "runtime_zip_sha256": "f1dcc9cca460630f81ea8f71794f69c80bed6556d2a4e6237b5785e1d2dff34b",
+  "model_url": "https://alphacephei.com/vosk/models/vosk-model-small-es-0.42.zip",
+  "model_zip_sha256": "09b239888f633ef2f0b4e09736e3d9936acfd810bc65d53fad45261762c6511f",
+  "files": [
+    {
+      "path": "speech-runtime/win-x64/libgcc_s_seh-1.dll",
+      "size": 606425,
+      "sha256": "201bf8a54ebb490f93ea4beb20740a483bf67036b90b5720f32d0c746a72d1e9"
+    },
+    {
+      "path": "speech-runtime/win-x64/libstdc++-6.dll",
+      "size": 26619146,
+      "sha256": "a1d96a848a567d7657e152cfe92e2fd62da412968cc11ec8bdb04bf20ebc5747"
+    },
+    {
+      "path": "speech-runtime/win-x64/libvosk.dll",
+      "size": 26447872,
+      "sha256": "9331c2f6a32cf77141af27c9750e79532718f51bbc2e3cea3c60f14ca4251e4e"
+    },
+    {
+      "path": "speech-runtime/win-x64/libwinpthread-1.dll",
+      "size": 366907,
+      "sha256": "92caeb8a4ea281c674003462a233f3b445b685b0a6f93eb11254feda2dda9cde"
+    },
+    {
+      "path": "models/speech/es/README",
+      "size": 483,
+      "sha256": "94132a6f5334701d8c0b4d25ef6890f74972909d8824c6c5974c41bca0542d88"
+    },
+    {
+      "path": "models/speech/es/am/final.mdl",
+      "size": 16098256,
+      "sha256": "ff9508e4db01d2e2375da3887973f94ef8057ee85411f4cb10a5c174ce7a4425"
+    },
+    {
+      "path": "models/speech/es/conf/mfcc.conf",
+      "size": 155,
+      "sha256": "e3c6cae9faa5da8a5a952cede8729af15166f325bb512789ec1ad6c0fd99e97f"
+    },
+    {
+      "path": "models/speech/es/conf/model.conf",
+      "size": 289,
+      "sha256": "330c1b50575d0c1c0402276c9cdc7a589ebd04de5d3de17695dd7e6db701da54"
+    },
+    {
+      "path": "models/speech/es/graph/Gr.fst",
+      "size": 21818215,
+      "sha256": "0ddc8aacbc80b2e8d470060a429eb26706b2ae1d32615a499befd60cc86a0304"
+    },
+    {
+      "path": "models/speech/es/graph/HCLr.fst",
+      "size": 12226498,
+      "sha256": "ce42fba42b99076f16bfe2892c3cab0936fb7409edba95c545be81c74f2f59e5"
+    },
+    {
+      "path": "models/speech/es/graph/disambig_tid.int",
+      "size": 50,
+      "sha256": "de29a2e1ae927c7207d93e93687e25242f7dcdcc9d7246b092364427aca54c24"
+    },
+    {
+      "path": "models/speech/es/graph/phones/word_boundary.int",
+      "size": 1131,
+      "sha256": "581390c44961af08d79afc2b36ac41289b219810c85c049ddf5c6de0442ea92a"
+    },
+    {
+      "path": "models/speech/es/ivector/final.dubm",
+      "size": 168048,
+      "sha256": "71b6830ae8cbef8764ccc9a6c65943a0e80f28b32982ae4e32f2d1ff15fadf14"
+    },
+    {
+      "path": "models/speech/es/ivector/final.ie",
+      "size": 9927287,
+      "sha256": "601057024fc8292ed8c8bd82686f254c390868024b20c4978dfc37d82529ba05"
+    },
+    {
+      "path": "models/speech/es/ivector/final.mat",
+      "size": 44975,
+      "sha256": "81a445f1589de2251562879efd0ca55d2954d937d4ae5f653aa3f11e6fdea5ef"
+    },
+    {
+      "path": "models/speech/es/ivector/global_cmvn.stats",
+      "size": 1081,
+      "sha256": "489e52a6f34fdf3dac2293784e6e096803c5b5387fe8ad9fbdcd03a65be8917c"
+    },
+    {
+      "path": "models/speech/es/ivector/online_cmvn.conf",
+      "size": 95,
+      "sha256": "a2f3571754b64297cb7efb2e7ca3df61995c5a45fcbb97188f90613552bb2dfe"
+    },
+    {
+      "path": "models/speech/es/ivector/splice.conf",
+      "size": 35,
+      "sha256": "9f0c5f7c82d18eaf25d8bce470efa9f7741f88411fe428774bc0a9bb69a24756"
+    }
+  ]
+}

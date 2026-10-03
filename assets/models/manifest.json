@@ -1,0 +1,37 @@
+[
+  {
+    "name": "face_detection_yunet_2023mar.onnx",
+    "sha256": "8f2383e4dd3cfbb4553ea8718107fc0423210dc964f9f4280604804ed2552fa4",
+    "size": 232589,
+    "folder": "face_detection_yunet",
+    "commit": "47534e27c9851bb1128ccc0102f1145e27f23f98"
+  },
+  {
+    "name": "person_detection_mediapipe_2023mar.onnx",
+    "sha256": "47fd5599d6fa17608f03e0eb0ae230baa6e597d7e8a2c8199fe00abea55a701f",
+    "size": 11990159,
+    "folder": "person_detection_mediapipe",
+    "commit": "47534e27c9851bb1128ccc0102f1145e27f23f98"
+  },
+  {
+    "name": "pose_estimation_mediapipe_2023mar.onnx",
+    "sha256": "9d89c599319a18fb7d2e28451a883476164543182bafca5f09eb2cf767ed2f3f",
+    "size": 5557238,
+    "folder": "pose_estimation_mediapipe",
+    "commit": "47534e27c9851bb1128ccc0102f1145e27f23f98"
+  },
+  {
+    "name": "palm_detection_mediapipe_2023feb.onnx",
+    "sha256": "78ff51c38496b7fc8b8ebdb6cc8c1abb02fa6c38427c6848254cdaba57fcce7c",
+    "size": 3905734,
+    "folder": "palm_detection_mediapipe",
+    "commit": "47534e27c9851bb1128ccc0102f1145e27f23f98"
+  },
+  {
+    "name": "handpose_estimation_mediapipe_2023feb.onnx",
+    "sha256": "db0898ae717b76b075d9bf563af315b29562e11f8df5027a1ef07b02bef6d81c",
+    "size": 4099621,
+    "folder": "handpose_estimation_mediapipe",
+    "commit": "47534e27c9851bb1128ccc0102f1145e27f23f98"
+  }
+]

@@ -1,0 +1,46 @@
+Adapta PE Windows 1.0 — edición Base x64
+
+1. Cierra la versión anterior, también desde la bandeja junto al reloj.
+2. Ejecuta AdaptaPE-1.0-Setup-x64.exe. Guarda la app en
+   %LOCALAPPDATA%\Programs\AdaptaPE y permite elegir accesos en escritorio e Inicio.
+   Incluye .NET. Si falta Visual C++, abre su instalador oficial de Microsoft.
+   Detecta Windows y la versión instalada: permite actualizar o reparar.
+   Bloquea reemplazar una versión más reciente. Conserva preferencias.
+3. Abre Adapta PE desde el icono. La alternativa portable requiere extraer
+   TODO el ZIP, conservar DLL/models/licenses y abrir AdaptaPE.exe.
+   Sólo los paquetes no autocontenidos requieren .NET Desktop Runtime 10 x64:
+   https://dotnet.microsoft.com/download/dotnet/10.0
+4. En Control, activa Voz. En Dispositivos y reconocimiento puedes elegir
+   micrófono y motor: Automático, Local incluido o SAPI español instalado.
+   Automático usa el motor local si SAPI interrumpe la escucha.
+   El indicador de audio muestra la señal del micrófono. Di «Computadora».
+5. Activa el cursor y espera la calibración manteniendo una postura cómoda.
+   La cámara aparece en Control y en el panel flotante PiP, con zona segura
+   y punto de movimiento. PiP muestra orden detectada y respuesta/error.
+   Activa «Clic por permanencia (dwell)» y vuelve a la zona segura de postura
+   para armar el clic. Mantén el puntero estable hasta completar el porcentaje.
+6. Para acelerar el cursor usa Perfil ágil; ajusta velocidad y amplitud en
+   Adaptar a mi movimiento. Puedes recalibrar en cualquier momento.
+   Perfil equilibrado restaura velocidad 1 y amplitud 0,65. Por voz:
+   «Computadora, cursor más rápido», «modo preciso», «modo rápido»,
+   «calibrar cursor», «activar clic automático» o «pausar cursor».
+   La velocidad depende de la postura, no del número de frames.
+   Volver a la zona segura frena; salir de ella permite navegar.
+7. Detener todo o Ctrl+Shift+S detienen la asistencia.
+
+Para cerrar apps: «Computadora, cierra Chrome», «cerrar la aplicación Word»
+o «cierra Bloc de notas». Varias ventanas o un nombre aproximado requieren
+elegir una opción. Se solicita cierre normal y se conserva el diálogo para
+guardar documentos. No se fuerza la terminación de procesos.
+
+La preview usa hasta 24 FPS independientemente del detector, que mantiene
+su ajuste de consumo. El cursor se refresca por separado y se detiene si
+la detección deja de ser reciente. FPS y latencia reales dependen del equipo.
+
+Los sensores y las acciones son locales. IA externa es opcional.
+El modelo local de voz se carga sólo al activarlo y se libera al apagar Voz.
+Desinstala desde Configuración > Aplicaciones. Conserva tus preferencias y
+los componentes Microsoft compartidos. Cierra la app desde la bandeja antes
+de actualizar o desinstalar; cerrar la ventana de ajustes no termina la app.
+Compilación y lógica comprobadas desde macOS; interfaz, sensores, controladores
+y rendimiento de esta versión necesitan validación en Windows.

@@ -1,0 +1,41 @@
+# Salidas de .NET y Visual Studio
+**/bin/
+**/obj/
+.vs/
+artifacts/
+TestResults/
+*.user
+*.suo
+*.nupkg
+*.snupkg
+
+# Sistema, editores y memoria local de herramientas
+.DS_Store
+.AppleDouble
+Thumbs.db
+Desktop.ini
+.idea/
+.vscode/
+.codex/
+.codebase-memory/
+*.swp
+*.swo
+*~
+
+# Configuración privada, credenciales y registros
+.env
+.env.*
+!.env.example
+!.env.sample
+!.env.template
+*.p12
+*.pfx
+*.key
+*.pem
+*.log
+
+# Descarga reproducible de Microsoft; conservar manifest.json
+assets/prerequisites/*.exe
+
+# Los modelos, DLL de voz, iconos, licencias, fuentes y pruebas sí se versionan.
+# No ignorar globalmente *.dll, *.onnx, *.fst o *.mdl: son recursos necesarios.
