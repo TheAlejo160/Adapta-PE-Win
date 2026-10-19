@@ -15,8 +15,10 @@ namespace AdaptaPE.Core
     public sealed class MotionResult {public Vec Delta,Velocity;public bool Click,Calibrated;public double Progress;}
     public sealed class KineticState
     {
-        public bool Tremor,DwellEnabled=true;
+        public bool Tremor,DwellEnabled=true,FixedCenter;
         public double Sensitivity=1,Amplitude=.65,DwellDuration=1;
+        // Saltos mayores desarman el clic (200 ms, como macOS y la extensión); a 5 detecciones por segundo el intervalo normal ya es 200 ms.
+        public double MaxGap=.2;
         public Vec? Origin {get;private set;}
         public double Progress {get;private set;}
         public Vec ControlPoint {get{return smooth;}}
@@ -30,14 +32,14 @@ namespace AdaptaPE.Core
         double Dead {get{return Tremor?.07:.045;}} double Attraction {get{return Dead+.02;}}
         static double Median(IEnumerable<double> values){var a=values.OrderBy(x=>x).ToArray();return a[a.Length/2];}
         public void CancelClick(){armSince=null;dwellSince=null;armed=false;Progress=0;targetId=null;safe=false;}
-        public void Calibrate(){Origin=null;samples.Clear();history.Clear();lastTime=null;smooth=new Vec(.5,.5);CancelClick();}
+        public void Calibrate(){Origin=FixedCenter?(Vec?)new Vec(.5,.5):null;samples.Clear();history.Clear();if(FixedCenter){history.Add(new Vec(.5,.5));history.Add(new Vec(.5,.5));}lastTime=null;smooth=new Vec(.5,.5);CancelClick();}
         public void Lost(double time){CancelClick();samples.Clear();if(lastTime.HasValue&&time-lastTime.Value>=1.2)Calibrate();}
         public MotionResult Update(Vec point,double time,double aspect,string target)
         {
             var result=new MotionResult();
             if(!point.Finite||double.IsNaN(time)||double.IsInfinity(time)){Lost(time);return result;}
             double interval=lastTime.HasValue?time-lastTime.Value:0;
-            if(interval>1.2)Calibrate();if(interval<0||interval>.5){CancelClick();history.Clear();}lastTime=time;
+            if(interval>1.2)Calibrate();if(interval<0||interval>MaxGap){CancelClick();history.Clear();}lastTime=time;
             if(!Origin.HasValue) {
                 samples.Add(Tuple.Create(time,point));samples.RemoveAll(p=>time-p.Item1>1.2);
                 if(samples.Count<4||time-samples[0].Item1<.9)return result;

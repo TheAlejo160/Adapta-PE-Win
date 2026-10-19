@@ -69,6 +69,7 @@ namespace AdaptaPE.Windows
             }
             Selected=index;
         }
+        public void DisplayChanged(){if(legacy!=null)legacy.ResizeDisplay();}
         public void Stop() {
             if(legacy!=null){legacy.Close();legacy.Dispose();legacy=null;}
             if(initialized&&Global&&Selected!=0){Effect current;if(MagGetFullscreenColorEffect(out current)&&Equal(current,applied)) {
@@ -84,6 +85,7 @@ namespace AdaptaPE.Windows
             protected override Forms.CreateParams CreateParams {get{var p=base.CreateParams;p.ExStyle|=0x08000000|0x20;p.ExStyle|=0x80000;return p;}}
             public LegacyWindow(){FormBorderStyle=Forms.FormBorderStyle.None;ShowInTaskbar=false;TopMost=true;Bounds=Forms.SystemInformation.VirtualScreen;BackColor=System.Drawing.Color.Black;Opacity=.999;}
             protected override void OnShown(EventArgs e){base.OnShown(e);Magnifier=CreateWindowEx(0,"Magnifier","",0x40000000|0x10000000,0,0,Width,Height,Handle,IntPtr.Zero,IntPtr.Zero,IntPtr.Zero);if(Magnifier==IntPtr.Zero)throw new InvalidOperationException("No se pudo crear filtro Windows 7.");MagSetWindowFilterList(Magnifier,0,1,new[]{Handle});timer.Tick+=(s,a)=>{var b=Forms.SystemInformation.VirtualScreen;MagSetWindowSource(Magnifier,new Native.Rect{Left=b.Left,Top=b.Top,Right=b.Right,Bottom=b.Bottom});};timer.Start();}
+            public void ResizeDisplay(){Bounds=Forms.SystemInformation.VirtualScreen;if(Magnifier!=IntPtr.Zero)Native.SetWindowPos(Magnifier,IntPtr.Zero,0,0,Width,Height,0x14);}
             protected override void Dispose(bool disposing){if(disposing)timer.Dispose();base.Dispose(disposing);}
         }
     }

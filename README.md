@@ -2,11 +2,68 @@
 
 # Adapta PE para Windows
 
+## Comandos naturales: bloque del 17 de octubre de 2026
+
+La palabra predeterminada admite «Computadora», «Computadoras» y «Computador». Una llamada seguida sólo de cortesía mantiene la espera de ocho segundos. Las palabras personales siguen siendo independientes: elegir «Asistente» no activa esos alias. Se conserva el texto original tras la llamada, incluidos espacios interiores y Unicode; las pruebas de texto no acreditan reconocimiento con micrófono.
+
+El parser acepta cortesía y variantes españolas como «por favor abre Safari», «quiero que abras Safari», «ábrame Safari» y «abrí Safari». Conserva mayúsculas, acentos y espacios interiores del dictado. La selección literal y las consultas a la API conservan su puntuación. Se mantienen los atajos nativos existentes.
+
+Las partículas finales ambiguas «pe», «pues», «ya pe» y «ya pues» sólo se retiran si llevan una coma antes. Así «busca Adapta PE» y «busca qué significa pues» conservan su contenido. «Abre Safari, pe» se prepara como «abre Safari». Es una diferencia conservadora respecto a la extensión de referencia; no se adivina si una palabra final pertenece a un nombre o consulta.
+
+Este bloque porta reglas de texto españolas. No añade reconocimiento acústico en seis idiomas ni acredita precisión con micrófonos reales.
+
+Base también acota ángulos extremos para impedir bucles en el cálculo del gesto. Las comprobaciones portables y la compilación cruzada no validan cámara, voz, WPF, permisos o rendimiento en Windows real.
+
 Aplicación **Base completa en C# y WPF**, basada en las funciones de Adapta PE para navegador y macOS. Incluye voz, control de aplicaciones, cursor cinético, lectura accesible, siete filtros, bandeja, panel flotante e IA externa opcional. Conserva el fondo y logotipo originales de macOS, con icono propio en ejecutable, ventanas y bandeja. No requiere extensión, Swift, Python ni servidor local.
 
 **Estado:** el usuario confirmó arranque, instalación y uso de la versión 0.2.1 en Windows. La versión **1.0** amplía voz y comandos; incorpora también el refinamiento previo; compilación y lógica portable verificadas desde macOS. Falta comprobar sus cambios de cámara, cursor y comandos con sensores reales. No se han medido CPU/RAM ni acreditado toda la matriz de compatibilidad. Consulta [validación Windows pendiente](docs/VALIDACION-WINDOWS.md).
 
 **1.0.1:** instalador con cuy original, detección de Windows 10/11 x64, instalación/actualización/reparación y protección frente a versiones más antiguas. Accesos de escritorio/Inicio elegibles, conservados al actualizar. Interfaz más sobria, funciones principales agrupadas, foco visible y PiP con activación de voz/cámara, orden detectada, respuesta/error y estado de calibración. Mantiene cámara y guías independientes del detector. Comparte alias naturales de la extensión; «cancelar clic» retira sólo el clic pendiente. Imágenes de marca cargadas una vez; no se añade un framework visual ni animaciones continuas.
+
+## Mascotas y mejoras compartidas · 11 de octubre de 2026
+
+Se contrastaron las extensiones completas 13.0 y Lite 3.0, sus README y los motores actuales. Las mejoras se adaptan a las APIs del escritorio; cada edición conserva sus funciones.
+
+En **Mascota**, elige **Tinku** (gallito), **Cuchu** (cuy), **Yati** (llama) o **Sin mascota**, que es el valor inicial. Sólo se decodifica el atlas elegido. Los cuadros nativos de 96×112 conservan transparencia, secuencias de entrada/salida y duración de los sprites originales. Un temporizador sigue la duración de los cuadros; otro se programa una sola vez para el descanso. No se repinta toda la interfaz. La animación se detiene al dormir, con movimiento reducido y durante suspensión. Ocultar/cambiar libera el atlas anterior.
+
+La mascota mira hacia el cursor cercano, acompaña la llamada al asistente y cambia entre hablar y leer durante la salida de voz real. **Saludar**, **Dormir** y **Despertar** permiten controlar su estado; dormir se mantiene hasta despertar. El dibujo deja pasar los clics. Arrastra su nombre entre pantallas o pulsa **Mover con teclas**, usa las flechas y vuelve con **Escape**. **Otro monitor** cambia la pantalla sin arrastrar; se recuerdan mascota, monitor y posición relativa.
+
+### Interfaz, panel y compañía
+
+Las funciones principales quedan en secciones con nombres directos. **Usar panel** abre PiP; **Opciones** permite elegir mascota, filtros, esquina y monitor. Los dispositivos y preferencias de reconocimiento permanecen bajo sus opciones avanzadas. Base conserva calibración, control corporal, selección de cámara y API externa voluntaria. La cámara de ajustes aparece sólo en Control; en PiP puedes ocultar su vista sin apagar el cursor. **Detener todo** permanece accesible.
+
+Activa **Mover mascota y panel juntos** para situar la mascota arriba de PiP. Arrastra el título del panel o el nombre de la mascota para mover ambos. Al separarlos, la mascota recupera su posición propia. Se recuerdan unión, monitor y posición relativa del panel; cambiar de esquina vuelve al anclaje. El tamaño se limita al área útil reservando lugar para la mascota. Windows usa la barra de título nativa; Ajustes y Detener todo permanecen en un pie fijo al desplazar el contenido.
+
+La llamada por voz usa el teléfono una vez; ejecutar una orden usa la laptop una vez. Leer y hablar acompañan únicamente la salida de voz real. Después vuelve a reposo, sin dejar teléfono/laptop trabajando indefinidamente. Tras **90 segundos sin interacción**, descansa y detiene su animación. La próxima acción despierta el descanso automático; **Dormir** manual exige **Despertar**. No duerme automáticamente durante una lectura o respuesta hablada.
+
+Di **«computadora, une mascota al panel»**, **«separa mascota del panel»** o **«panel esquina superior izquierda»**. También se admite **«mueve el panel a la esquina inferior derecha»**. Cambiar posición usa los mismos límites que el arrastre y conserva el control disponible.
+
+Después de llamar al asistente, admite **«mascota Cu Chu»**, **«mascota Tinku»**, **«mascota Yaty»**, **«elige mascota tiiinku»**, **«oculta mascota»**, **«saluda mascota»**, **«duerme mascota»** y **«despierta mascota»**. Las órdenes se reconocen completas; mencionar una mascota dentro de dictado o búsqueda conserva ese texto.
+
+El cursor ofrece tres modos: **Cabeza / torso**, **Brazos, manos o puños** y **Zona con textura**. Los nombres antiguos se convierten al modo equivalente: torso → cabeza, automático/brazos/lados → manos, zonas laterales → zona libre. Se conservan velocidad, amplitud, temblor y permanencia.
+
+Cabeza aprende reposo mediante al menos cuatro muestras distintas durante 900 ms. Manos y textura tienen centro fijo: la primera posición es el reposo de un joystick; desplaza ligeramente la zona visible y mantenla para continuar, vuelve al inicio para detenerte. La muñeca permite manos cerradas; el respaldo corporal usa muñecas/codos visibles, nunca hombros para ese modo. Se conserva la mano por proximidad; al perderla, sólo una muñeca cercana puede respaldarla. Cabeza admite nariz/giro y respaldo corporal.
+
+Cerca del reposo, uno o dos dedos alineados aportan dirección. Windows usa los puntos 3D estimados del modelo para inclinación de palma/puño. Zona libre adquiere un detalle por movimiento local en cualquier parte útil de la imagen, compensa cambios uniformes de luz y compara parches normalizados con pequeños giros. No identifica anatomía; una textura uniforme/repetida u oclusión puede impedir seguimiento. Después de 1.200 ms de pérdida se necesita otra adquisición.
+
+Pérdidas, pausas, cambios de fuente y huecos de más de 200 ms reinician el gesto y desarman clic (300 ms al elegir 5 detecciones/segundo, para tolerar el reloj de captura sin reiniciar cada muestra). Volver al reposo frena sin esperar al suavizado. El clic sigue exigiendo salida, regreso y permanencia sobre el mismo destino. La atracción suave hacia el centro de controles accesibles cercanos (máximo 28 píxeles) reutiliza la consulta local de accesibilidad; no recorre toda la app ni arma clic. Un movimiento decidido permite salir.
+
+La captura solicita **640×480**; cabeza se reduce a **320×240**, manos conserva el detalle VGA y textura trabaja a **160×120**. Preview **hasta 24 FPS**, un bitmap y buffers reutilizados, independiente de inferencia configurable y movimiento a unos 60 Hz. Sólo existe un fotograma pendiente.
+
+### Pantalla completa y varios monitores
+
+En Windows 8 o posterior, [MagSetFullscreenColorEffect](https://learn.microsoft.com/en-us/windows/win32/api/magnification/nf-magnification-magsetfullscreencoloreffect) aplica la matriz a todo el escritorio, sin capturar ni copiar cada monitor. Mantiene restauración del efecto previo, comprobación de propietario y recuperación. Windows 7 conserva la capa a 10 FPS, ahora ajustada al cambiar las pantallas; no se acredita compatibilidad con juegos exclusivos en ese sistema.
+
+La mascota es una ventana superior y la entrada usa el escritorio virtual, con coordenadas negativas. Las acciones por voz dependen de los permisos, foco y controles publicados por cada app. Usa **ventana sin bordes/pantalla completa de escritorio** para juegos que no admitan capas en modo exclusivo. Algunos juegos con entrada propia o protección antitrampas pueden rechazar entrada sintética; no se eluden esas restricciones ni UAC.
+
+### Código y comprobación
+
+- [`Core/Mascot.cs`](src/AdaptaPE/Core/Mascot.cs): atlas, secuencias y comandos independientes de la UI.
+- [`Windows/Mascot.cs`](src/AdaptaPE/Windows/Mascot.cs): carga sólo del recurso elegido, dos ventanas, voz, posición y suspensión.
+- [`assets/mascotas/`](assets/mascotas/): sprites locales y manifiestos derivados de las extensiones.
+- [`Core/GestureState.cs`](src/AdaptaPE/Core/GestureState.cs) y [`Core/ZoneTracker.cs`](src/AdaptaPE/Core/ZoneTracker.cs): gesto, migración de modos, atracción y seguimiento local de textura.
+
+Se compilaron `net10.0-windows`, `net48` y `net461` desde macOS. Las 836 comprobaciones portables aprobaron comandos, estados/recursos de las tres mascotas, gesto a 5/15/30/60 FPS, pérdidas, atracción y textura. No se ejecutó WPF en Windows ni se midieron cámara, micrófono, DPI mixto o FPS reales. El aviso NU1900 del entorno impidió consultar el catálogo de vulnerabilidades de NuGet; no se cambiaron paquetes.
 
 ## Voz y comandos: versión 1.0
 
@@ -166,7 +223,7 @@ Estos comandos describen el flujo Windows. En macOS sólo se puede compilar de f
 
 ## Panel PiP
 
-Abre **Panel flotante · PiP**. Se ancla al monitor/esquina elegidos en Ayuda y conserva acceso a Ajustes y Detener todo. Los interruptores Voz/Cursor actúan sobre los mismos motores que la ventana principal. El panel muestra texto escuchado, **Orden detectada** al entender la intención y después respuesta o error. Detectar una orden no significa que Windows haya permitido ejecutarla; revisa la respuesta.
+Abre **Usar panel · PiP**. Arrastra su barra de título o elige esquina/monitor en Opciones; guarda la posición relativa. Ajustes y Detener todo quedan en un pie fijo. Los interruptores Voz/Cursor actúan sobre los mismos motores que la ventana principal. El panel muestra texto escuchado, **Orden detectada** al entender la intención y después respuesta o error. Detectar una orden no significa que Windows haya permitido ejecutarla; revisa la respuesta.
 
 Con cámara activa muestra preview local, anillos de zona segura, punto blanco de movimiento y landmarks disponibles. Verde marca la zona segura; naranja, el anillo para armar dwell; el punto blanco muestra desplazamiento respecto a la postura calibrada. La imagen se actualiza hasta 24 FPS, aunque la inferencia use menos detecciones/s. Calibración o pausa conserva la imagen; apagar cámara la retira. No se graban imágenes.
 
@@ -177,7 +234,7 @@ Con cámara activa muestra preview local, anillos de zona segura, punto blanco d
 | Nombre del asistente | `Computadora`; espera ocho segundos para la orden tras la señal |
 | Motor de voz | Automático: SAPI español, con fallback al local incluido |
 | Micrófono | Dispositivo predeterminado de Windows; seleccionable |
-| Control corporal | Cabeza; también automático, manos, torso, brazos y zona libre |
+| Control corporal | Cabeza/torso; también brazos/manos/puños y zona con textura |
 | Velocidad / amplitud | `1` / `0,65`; menor amplitud requiere movimientos menores |
 | Permanencia | `1 s`, ajustable de `0,4` a `5 s`; un clic por entrada al centro |
 | Detecciones/s | `12`; seleccionables de `5` a `30`, independientemente de preview |
@@ -190,9 +247,9 @@ Con cámara activa muestra preview local, anillos de zona segura, punto blanco d
 1. Primer lanzamiento con asistencia apagada. Enfoca una aplicación externa, por ejemplo Bloc de notas.
 2. En Control, abre Dispositivos y reconocimiento, elige micrófono y activa Voz y di **«Computadora, muestra campos»**. También puedes escribir una orden en ajustes.
 3. Automático intenta SAPI español instalado y usa el reconocedor local incluido si no está disponible, falla al arrancar o termina inesperadamente la escucha. No reinicia indefinidamente el mismo SAPI. Puedes elegir Local incluido directamente. SAPI necesita reconocimiento español y dictado; una voz TTS no basta. El indicador de audio muestra si el micrófono recibe señal. Los enlaces abren permisos del micrófono y ajustes de sonido en Windows 10/11. Un error real de dispositivo se muestra y requiere corregir permisos/dispositivo; no se oculta como un problema genérico de micrófono.
-4. En Control, abre Cámara y consumo para elegir dispositivo y Adaptar a mi movimiento para elegir modo. Activa el cursor y mantén postura cómoda para calibrar. La vista muestra cámara y anillos de postura. Perfil equilibrado aplica sensibilidad 1 y amplitud 0,65; Ágil aplica 1,5 y 0,65. La curva tiene zona de precisión y alcanza 1.200 px/s con sensibilidad 1; el límite es 2.400 px/s, o 1.600 con temblor activo. Son parámetros del algoritmo, no latencia o velocidad efectiva medida en el equipo. Ajusta a tu comodidad; volver a la zona segura frena.
+4. En Control, abre Cámara y consumo para elegir dispositivo y Adaptar a mi movimiento para elegir modo. Activa el cursor: cabeza calibra tu postura; manos y textura parten de un centro fijo. La vista muestra cámara y anillos de postura. Perfil equilibrado aplica sensibilidad 1 y amplitud 0,65; Ágil aplica 1,5 y 0,65. La curva tiene zona de precisión y alcanza 1.200 px/s con sensibilidad 1; el límite es 2.400 px/s, o 1.600 con temblor activo. Son parámetros del algoritmo, no latencia o velocidad efectiva medida en el equipo. Ajusta a tu comodidad; volver a la zona segura frena.
 5. Para hacer clic por permanencia, sal del anillo y vuelve al centro manteniendo el mismo objetivo. Sólo se arma un clic por entrada. El porcentaje aparece junto al cursor y también en ajustes/PiP. Las superficies sin semántica UIA usan una región de 24×24 px y ventana verificada; perder el objetivo reinicia la espera. El ratón físico pausa el control durante dos segundos.
-6. En Lectura y color, elige un filtro o activa TalkBack automático. Cerrar ajustes conserva asistencia y acceso desde bandeja/panel.
+6. En Lectura y filtros, elige un filtro o activa TalkBack automático. Cerrar ajustes conserva asistencia y acceso desde bandeja/panel.
 7. **Detener todo** cancela operaciones, libera sensores, detiene lectura y retira el filtro propio. **Ctrl+Shift+S** es la parada de emergencia si Windows permite registrar el atajo.
 
 «Salir» conserva preferencias para otro inicio; «Detener todo» recuerda asistencia apagada. El inicio con Windows es voluntario. Bloqueo y suspensión detienen entrada/sensores; al volver se revalidan recursos y se recalibra el cursor. Restablecer un dispositivo puede requerir reactivarlo.
@@ -218,9 +275,9 @@ Se utiliza el navegador enfocado cuando se reconoce como compatible. URLs en la 
 
 ## Diseño para consumo contenido
 
-- Cámara de trabajo **320×240**, **12 FPS** predeterminados, configurables entre 5 y 30.
+- Captura **640×480**, cabeza **320×240**, **12 FPS** predeterminados, configurables entre 5 y 30.
 - Un hilo de cómputo OpenCV, una captura y una inferencia serial. La captura reemplaza un único frame pendiente; el detector toma el más reciente. No hay cola creciente. Una detección con más de 350 ms de antigüedad no controla el cursor.
-- Sólo se ejecuta el detector correspondiente al modo activo. Modelos cargados bajo demanda, liberados al apagar cámara. Cabeza usa YuNet; manos y cuerpo usan modelos MediaPipe de OpenCV Zoo. Zona libre sigue textura con flujo óptico.
+- Sólo se ejecuta el detector correspondiente al modo activo. Modelos cargados bajo demanda, liberados al apagar cámara. Cabeza usa YuNet; manos y cuerpo usan modelos MediaPipe de OpenCV Zoo. Zona libre sigue parches normalizados propuestos por movimiento local, sin clasificar anatomía.
 - Vista previa sólo con Control/PiP visibles, hasta 24 FPS y una notificación UI pendiente. Buffers BGR y `WriteableBitmap` reutilizados: no comprime ni decodifica JPEG por frame. Calibrar o pausar no oculta cámara. Captura solicita 30 FPS; el controlador puede entregar menos.
 - Física temporal, calibración, suavizado y mediana de tres muestras al activar temblor. Actualización de cursor independiente, cada 15 ms aproximadamente; integra velocidad por tiempo real, sin acelerar al aumentar FPS. Caduca la velocidad tras 350 ms sin una muestra reciente. El retorno a zona segura frena antes de esperar el suavizado de dwell.
 - Filtros globales mediante Magnification API en Windows 8+; el código no captura continuamente pantallas para esos filtros. Windows 7 utiliza una capa de magnificación a 10 FPS.
@@ -287,9 +344,11 @@ El índice `adapta-pe-win` se regenera en modo completo y se guarda en `.codebas
 
 ## Privacidad e IA opcional
 
+Revisión estática del 18 de octubre de 2026: IA aplica un plazo total de 30 segundos, incluida la lectura del cuerpo, y conserva el límite de respuesta de 1 MiB. La apertura de URLs consulta UI Automation y valida la escritura fuera del hilo WPF. La carga de preferencias valida activación (máximo 40 caracteres), micrófono, motor de voz y filtro como Lite, sin cambiar el JSON guardado. Se añadieron regresiones con archivos temporales al harness; no se ejecutaron ni compilaron en esta revisión por falta de SDK .NET. La respuesta del dispatcher y los cambios de foco requieren comprobación en Windows.
+
 Preferencias en `%LOCALAPPDATA%\AdaptaPE\settings.json`; clave en archivo cifrado con DPAPI ligado al usuario. Audio, imágenes, postura y transcripciones no se guardan. La cámara procesa localmente; no descarga modelos durante el uso. Datos visibles de la sesión permanecen en memoria. El reconocimiento local incluido usa Vosk, no descarga modelos ni envía audio; produce texto simple, normalmente sin capitalización o puntuación automática.
 
-IA apagada por defecto: endpoint HTTPS compatible con `chat/completions`, modelo y clave propios. No incluye créditos. Las consultas se envían sólo mediante una orden explícita. Analizar pantalla exige consentimiento adicional durante esa sesión, captura el monitor del cursor y puede incluir datos privados. La lectura UIA local no envía capturas a IA. Órdenes desconocidas nunca se envían automáticamente.
+IA apagada por defecto: endpoint HTTPS compatible con `chat/completions`, modelo y clave propios. HTTP sólo se acepta en este equipo (localhost, 127.x.x.x o ::1). Cambiar el endpoint cancela la consulta, borra la clave protegida y retira el permiso de pantalla; si no se puede borrar, se conserva el endpoint anterior. No incluye créditos. Las consultas se envían sólo mediante una orden explícita. Analizar pantalla exige consentimiento adicional durante esa sesión, captura el monitor del cursor y puede incluir datos privados. La lectura UIA local no envía capturas a IA. Órdenes desconocidas nunca se envían automáticamente.
 
 Las búsquedas web comparten su consulta con el sitio como una navegación normal. No se ejecutan comandos shell dictados. La app facilita acceso; no sustituye todas las funciones de Narrador/NVDA ni garantiza detección universal con cualquier condición motora.
 
@@ -346,7 +405,11 @@ El 3 de octubre de 2026 se revisaron README, recursos y exclusiones de Git. Pasa
 | Extensión Lite | [Adapta-PE-Lite](https://github.com/TheAlejo160/Adapta-PE-Lite): voz y filtros. |
 | Windows Base | [Adapta-PE-Win](https://github.com/TheAlejo160/Adapta-PE-Win): aplicación WPF independiente. |
 | Windows Lite | [Adapta-PE-Lite-Win](https://github.com/TheAlejo160/Adapta-PE-Lite-Win): voz, lectura manual y filtros. |
-| macOS Base y Lite funcional | [Adapta-PE-MacOS-Intel-Apple-Silicon-](https://github.com/TheAlejo160/Adapta-PE-MacOS-Intel-Apple-Silicon-): dos proyectos Xcode que comparten motores. |
+| macOS completo | [Adapta-PE-MacOS-Intel-Apple-Silicon-](https://github.com/TheAlejo160/Adapta-PE-MacOS-Intel-Apple-Silicon-): sólo Adapta PE completo, con su proyecto Xcode. Lite tiene repositorio y fuentes independientes. |
 | macOS Lite independiente | [Adapta-PE-Lite-MacOS](https://github.com/TheAlejo160/Adapta-PE-Lite-MacOS): voz y siete filtros en una aplicación autónoma. |
 
 Los números de versión y permisos pertenecen a cada plataforma. Un ZIP de la extensión no instala la aplicación de escritorio. Los repositorios publican fuentes y recursos necesarios; los instaladores generados y la configuración personal quedan fuera de Git.
+
+### Paquetes locales de prueba: 17 de octubre de 2026
+
+Se recompiló net10.0-windows para win-x64 autocontenido y se generó el instalador NSIS con los recursos y licencias actuales. IncludeSourceRevisionInInformationalVersion=false conserva ProductVersion exactamente 1.0, sin sufijo Git, como exige el check de paquete; FileVersion sigue siendo 1.0.3.0. Se verificaron hashes de recursos, checks portables, integridad del archivo NSIS y correspondencia de la DLL incluida con la recién compilada. Esto no acredita instalación/desinstalación, WPF, sensores o voz en Windows. No tiene firma Authenticode.

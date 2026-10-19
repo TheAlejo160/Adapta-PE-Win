@@ -105,16 +105,16 @@ namespace AdaptaPE.Windows
             if(e.TryGetCurrentPattern(ExpandCollapsePattern.Pattern,out p)){((ExpandCollapsePattern)p).Expand();return;}
             throw new InvalidOperationException("El control no admite activación accesible. Usa cursor o atajo.");
         }
-        public static Tuple<string,string,Rect,IntPtr> AtCursor() {
+        public static Tuple<string,string,Rect,IntPtr,bool> AtCursor() {
             Native.Point p;if(!Native.GetCursorPos(out p))return null;var window=Native.RootAtCursor();if(window==IntPtr.Zero||!Native.DefaultDesktop())return null;
             // Un clic por postura también puede apuntar a superficies sin semántica UIA.
             var cell=new Vec(Math.Floor(p.X/24.0)*24,Math.Floor(p.Y/24.0)*24);
-            var fallback=Tuple.Create("pixel:"+window+":"+cell.X+":"+cell.Y,"",new Rect(cell.X,cell.Y,24,24),window);
+            var fallback=Tuple.Create("pixel:"+window+":"+cell.X+":"+cell.Y,"",new Rect(cell.X,cell.Y,24,24),window,false);
             try{var e=AutomationElement.FromPoint(new Point(p.X,p.Y));if(e==null||!e.Current.IsEnabled||e.Current.IsOffscreen)return null;var bounds=e.Current.BoundingRectangle;
                 if(bounds.IsEmpty||!bounds.Contains(p.X,p.Y))return fallback;
                 string id=e.Current.ProcessId+":"+string.Join(".",e.GetRuntimeId());string text="";
                 if(Safe(e))try{text=Read(e);}catch(System.Runtime.InteropServices.COMException){}
-                return Tuple.Create(id,text,bounds,window);
+                return Tuple.Create(id,text,bounds,window,Invokable(e)||Field(e));
             }catch(ElementNotAvailableException){return fallback;}catch(InvalidOperationException){return fallback;}catch(System.Runtime.InteropServices.COMException){return fallback;}
         }
     }

@@ -12,6 +12,7 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <AssemblyName>AdaptaPE</AssemblyName>
     <Version>1.0</Version>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
     <FileVersion>1.0.3.0</FileVersion>
     <ApplicationIcon>../../assets/brand/AdaptaPE.ico</ApplicationIcon>
     <!-- La UI principal es WPF: DPI se declara en manifiesto antes de crear HWND. -->
@@ -20,6 +21,7 @@
     <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="../../assets/mascotas/*.png;../../assets/mascotas/*.json" Link="mascotas/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
     <PackageReference Include="OpenCvSharp4" Version="4.10.0.20241108" Condition="'$(TargetFramework)' != 'net461'" />
     <PackageReference Include="OpenCvSharp4.runtime.win" Version="4.10.0.20241108" Condition="'$(TargetFramework)' != 'net461'" />
     <PackageReference Include="OpenCvSharp4" Version="4.5.3.20210817" Condition="'$(TargetFramework)' == 'net461'" />

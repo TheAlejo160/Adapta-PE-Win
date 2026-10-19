@@ -1,0 +1,1 @@
+Mascotas del autor: Tinku, Cuchu y Yati. Atlas locales derivados de Mascota-Modular-Adapta-PE 0.3.0, a 96 × 112 px por cuadro. PNG con transparencia para decodificación nativa en macOS y Windows. Se conservan fases, orden y duraciones del JSON de la extensión. Sólo se carga la mascota seleccionada. Licencia y atribución del repositorio principal aplican.

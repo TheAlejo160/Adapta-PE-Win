@@ -137,11 +137,14 @@ namespace AdaptaPE.Windows
             if(Native.Browser(Target)) {
                 PrepareTarget();IntPtr window=Target;
                 if(destination=="ventana"||destination=="pestana"){Native.Chord(KeyNames.TryParse(destination=="ventana"?"CTRL+N":"CTRL+T"));await Task.Delay(300,token);var foreground=Native.GetForegroundWindow();if(!Native.Browser(foreground)||Native.Pid(foreground)!=Native.Pid(window))throw new InvalidOperationException("El navegador cambió; apertura detenida.");window=foreground;}
-                if(!DesktopAccess.IsCurrent(window))throw new InvalidOperationException("El foco cambió.");Native.Chord(KeyNames.TryParse("CTRL+L"));
-                var address=System.Windows.Automation.AutomationElement.FocusedElement;
-                if(address==null||address.Current.IsPassword||address.Current.ControlType!=System.Windows.Automation.ControlType.Edit||address.Current.ProcessId!=(int)Native.Pid(window))throw new InvalidOperationException("No se pudo enfocar la barra de direcciones del navegador.");
-                var addressId=address.GetRuntimeId();
-                Native.Unicode(url.AbsoluteUri,()=>{var focused=System.Windows.Automation.AutomationElement.FocusedElement;return DesktopAccess.IsCurrent(window)&&!token.IsCancellationRequested&&focused!=null&&!focused.Current.IsPassword&&focused.GetRuntimeId().SequenceEqual(addressId);});token.ThrowIfCancellationRequested();if(!DesktopAccess.IsCurrent(window))throw new InvalidOperationException("El foco cambió.");Native.Chord(KeyNames.TryParse("ENTER"));
+                await Task.Run(()=>{
+                    token.ThrowIfCancellationRequested();
+                    if(!DesktopAccess.IsCurrent(window))throw new InvalidOperationException("El foco cambió.");Native.Chord(KeyNames.TryParse("CTRL+L"));
+                    var address=System.Windows.Automation.AutomationElement.FocusedElement;
+                    if(address==null||address.Current.IsPassword||address.Current.ControlType!=System.Windows.Automation.ControlType.Edit||address.Current.ProcessId!=(int)Native.Pid(window))throw new InvalidOperationException("No se pudo enfocar la barra de direcciones del navegador.");
+                    var addressId=address.GetRuntimeId();
+                    Native.Unicode(url.AbsoluteUri,()=>{var focused=System.Windows.Automation.AutomationElement.FocusedElement;return DesktopAccess.IsCurrent(window)&&!token.IsCancellationRequested&&focused!=null&&!focused.Current.IsPassword&&focused.GetRuntimeId().SequenceEqual(addressId);});token.ThrowIfCancellationRequested();if(!DesktopAccess.IsCurrent(window))throw new InvalidOperationException("El foco cambió.");Native.Chord(KeyNames.TryParse("ENTER"));
+                },token);
             }else{await Task.Run(()=>System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(url.AbsoluteUri){UseShellExecute=true}),token);}
             if(Respond!=null)Respond("Destino abierto");
         }

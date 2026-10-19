@@ -118,27 +118,112 @@ namespace AdaptaPE.Core
         };
         public static string[] SpeechPhrases {
             get { return Shortcuts.Keys.Concat(NaturalShortcuts.Keys).Concat(NaturalActions.Keys).Concat(new[]{
+                "une mascota al panel","separa mascota del panel","mascota Tinku","mascota Cuchu","mascota Yati","oculta mascota","saluda mascota","duerme mascota","despierta mascota",
                 "detener todo","cancelar","silencio","lee la pantalla","muestra campos","muestra comandos","clic","clic derecho",
                 "mostrar ajustes","modo flotante","quitar filtro","sin filtro","elige uno","elige dos","elige tres","elige cuatro","elige cinco","elige seis","siguiente","anterior"
             }).Distinct().ToArray(); }
         }
-        static string Request(string text) {
-            return Regex.Replace((text??"").Trim().TrimStart('¿','¡'),
-                @"^(?:(?:(?:por favor|porfa)[, ]+|oye[, ]+|a ver[, ]+|(?:me )?(?:puedes|podr[ií]as)\s+|(?:quiero|necesito)\s+(?:que\s+)?|(?:hazme|haz) el favor de\s+))+", "", RegexOptions.IgnoreCase);
+        // Reglas españolas de la extensión; sólo se reescribe el prefijo, nunca el dictado.
+        public static string Prepare(string text) {
+            string original=(text??"").Trim().TrimStart('¿','¡',',','.',';',':').TrimStart();
+            // La coma temporal permite retirar también una cortesía sin orden.
+            original+=",";
+            while(PreparationWrapper.IsMatch(original)&&!NaturalActions.ContainsKey(Normalize(original.TrimEnd('.', ',', ';', ':', '!', '?'))))original=PreparationWrapper.Replace(original,"",1);
+            if(original.EndsWith(",",StringComparison.Ordinal))original=original.Substring(0,original.Length-1);
+            string rewritten=CanonicalPrefix(original);
+            if(Match(rewritten,@"^(?:escribe|dicta|introduce|ingresa texto|teclea|tipea|pon el texto|(?:pregunta|consulta)\s+a\s+la\s+ia|(?:selecciona|resalta)\s+(?:el\s+)?texto)\s+").Success)return rewritten;
+            original=original.TrimEnd(' ', '\t', '\r', '\n', '.', ',', ';', ':', '!', '?');
+            var ending=Match(original,@"(?:[\s,]+(?:por favor|porfa|porfis)|,\s*(?:ya pe|ya pues|pe|pues))$");
+            while(ending.Success){
+                original=original.Substring(0,ending.Index).TrimEnd(' ', '\t', '\r', '\n', '.', ',', ';', ':', '!', '?');
+                ending=Match(original,@"(?:[\s,]+(?:por favor|porfa|porfis)|,\s*(?:ya pe|ya pues|pe|pues))$");
+            }
+            string normalized=Normalize(original);
+            if(Shortcuts.ContainsKey(normalized)||NaturalActions.ContainsKey(normalized)||NaturalShortcuts.ContainsKey(normalized))return original;
+            return CanonicalPrefix(original);
+        }
+        static string CanonicalPrefix(string text){
+            var word=Match(text,@"^[\p{L}\p{M}]+");string verb;
+            return word.Success&&PreparationVerbs.TryGetValue(Normalize(word.Value),out verb)?verb+text.Substring(word.Length):text;
+        }
+        static readonly Regex PreparationWrapper=new Regex(@"^(?:oye|oe|oiga|hey|ey|eh|ya pues|ya pe|ya|ok|okey|okay|vale|bueno|a ver|mira|este|ahora|ahorita|entonces|y|porfa|porfis|por favor|favor de|me haces el favor de|hazme el favor de|me har[ií]as el favor de|h[aá]game el favor de|me hace el favor de|ay[uú]dame a|ay[uú]deme a|me ayudas a|quiero que|necesito que|quisiera que|me puedes|me podr[ií]as|me puede|me podr[ií]a|puedes|podr[ií]as|puede|podr[ií]a|pod[eé]s|quiero|quisiera|necesito|me gustar[ií]a|intenta|trata de|me|(?:vamos|voy) a(?= \S+(?:ar|er|ir)\b))[\s,¿¡]+",RegexOptions.IgnoreCase|RegexOptions.CultureInvariant,TimeSpan.FromMilliseconds(100));
+        static readonly Dictionary<string,string> PreparationVerbs=CreatePreparationVerbs();
+        static Dictionary<string,string> CreatePreparationVerbs(){
+            var result=new Dictionary<string,string>();
+            var groups=new[]{
+                Tuple.Create("abre","abra abras abri abrir abres abreme abrime abrame abrirme"),
+                Tuple.Create("busca","busque busques buscar buscas buscame busqueme buscarme"),
+                Tuple.Create("escribe","escriba escribas escribi escribir escribes escribeme escribime"),
+                Tuple.Create("dicta","dicte dictes dictar"),
+                Tuple.Create("cierra","cierre cierres cerra cerrar cierras cierrame cerrame"),
+                Tuple.Create("baja","baje bajes bajar bajas bajale"),
+                Tuple.Create("sube","suba subas subi subir subes subele"),
+                Tuple.Create("vuelve","vuelva vuelvas volve volver vuelves"),
+                Tuple.Create("regresa","regrese regreses regresar regresas"),
+                Tuple.Create("retrocede","retroceda retrocedas"),
+                Tuple.Create("avanza","avance avances avanzar avanzas"),
+                Tuple.Create("recarga","recargue recargues recargar recargas"),
+                Tuple.Create("actualiza","actualice actualices"),
+                Tuple.Create("refresca","refresque refresques"),
+                Tuple.Create("selecciona","seleccione selecciones seleccionar seleccionas seleccioname"),
+                Tuple.Create("resalta","resalte resaltes resaltar"),
+                Tuple.Create("pulsa","pulse pulses pulsar pulsas toca toque toques tocar clickea cliquea clica clickear cliquear clique"),
+                Tuple.Create("presiona","presione presiones presionar presionas aprieta apriete aprietes apreta apretar aplasta aplaste aplastes aplastar"),
+                Tuple.Create("enfoca","enfoque enfoques enfocar"),
+                Tuple.Create("reproduce","reproduzca reproduzcas reproducir"),
+                Tuple.Create("pausa","pause pauses"),
+                Tuple.Create("haz","haga hagas hace hacer haces"),
+                Tuple.Create("hazle","hagale hacele"),
+                Tuple.Create("dale","dele"),
+                Tuple.Create("cancela","cancele canceles"),
+                Tuple.Create("borra","borre borres borrar borras"),
+                Tuple.Create("limpia","limpie limpies limpiar"),
+                Tuple.Create("acerca","acerque"),
+                Tuple.Create("aleja","aleje"),
+                Tuple.Create("amplia","amplie ampliar"),
+                Tuple.Create("agranda","agrande agrandar"),
+                Tuple.Create("achica","achique achicar"),
+                Tuple.Create("aumenta","aumente"),
+                Tuple.Create("reduce","reduzca"),
+                Tuple.Create("ve","vaya vayas anda"),
+                Tuple.Create("entra","entre entres entrar"),
+                Tuple.Create("ingresa","ingrese"),
+                Tuple.Create("visita","visite"),
+                Tuple.Create("inicia","inicie"),
+                Tuple.Create("ejecuta","ejecute"),
+                Tuple.Create("duplica","duplique dupliques duplicar"),
+                Tuple.Create("silencia","silencie silencies silenciar mutea mutee mutees mutear"),
+                Tuple.Create("calla","callate callese"),
+                Tuple.Create("activa","active actives"),
+                Tuple.Create("desactiva","desactive"),
+                Tuple.Create("apaga","apague apagues apagar"),
+                Tuple.Create("enciende","encienda"),
+                Tuple.Create("prende","prenda"),
+                Tuple.Create("quita","quite quites quitar"),
+                Tuple.Create("cambia","cambie cambies cambiar"),
+                Tuple.Create("pasa","pase pases pasar"),
+                Tuple.Create("googlea","googlee"),
+                Tuple.Create("envia","envie envies"),
+                Tuple.Create("manda","mande mandes")
+            };
+            foreach(var group in groups)foreach(var form in group.Item2.Split(' '))result.Add(form,group.Item1);
+            return result;
         }
         public static Command Parse(string text)
         {
-            string original = Request(text);
+            string original = Prepare(text);
+            string mascot=MascotCommand.Parse(original);if(mascot!=null)return new Command("mascot",mascot);
             string n; Match m;
             if ((m=Match(original,@"^(?:escribe|escribir|dicta|dictar|introduce) (.+?) en (?:el )?campo (.+)$")).Success) return new Command("writeField",m.Groups[1].Value,m.Groups[2].Value);
             if ((m=Match(original,@"^(?:escribe|escribir|dicta|dictar|introduce|ingresa texto|escr[ií]beme|pon el texto)\s+(.+)$")).Success) return new Command("dictate",m.Groups[1].Value);
             if ((m=Match(original,@"^(?:pregunta|consulta)\s+a\s+la\s+ia\s+(.+)$")).Success) return new Command("ai",m.Groups[1].Value);
+            string literal=original;
             original=Regex.Replace(original,@"[, ]+(?:por favor|porfa)[.!?]*$","",RegexOptions.IgnoreCase).TrimEnd('.', '!', '?');
             n=Normalize(original);
             string natural;
             if(NaturalActions.TryGetValue(n,out natural))return new Command(natural);
             if(NaturalShortcuts.TryGetValue(n,out natural))return new Command("shortcut",natural);
-            if((m=Match(n,@"^(?:activa|activar|enciende|encender|desactiva|desactivar|apaga|apagar) (?:la )?(?:voz|escucha|microfono)$")).Success)return new Command("voice",n.StartsWith("desact")||n.StartsWith("apag")?"off":"on");
+            if((m=Match(n,@"^(?:activa|activar|enciende|encender|desactiva|desactivar|apaga|apagar) (?:la |el )?(?:voz|escucha|microfono)$")).Success)return new Command("voice",n.StartsWith("desact")||n.StartsWith("apag")?"off":"on");
             if (n=="analiza pantalla con ia") return new Command("screenAI");
             if ((m=Match(original,@"^(?:busca|buscar|b[uú]squeda de|encuentra|consulta|investiga|b[uú]scame|averigua)\s+(.+)$")).Success) {
                 string q=m.Groups[1].Value; string dest=Destination(ref q); string normalized=Normalize(q);
@@ -163,18 +248,18 @@ namespace AdaptaPE.Core
             if(n=="ajustar temblor")return new Command("tremor","on");
             if(n=="detener todo"||n=="deten todo"||n=="para todo") return new Command("stop");
             if(new[]{"cancelar","cancela","olvidalo","no hagas nada","cancelar seleccion"}.Contains(n)) return new Command("cancel");
-            if(new[]{"silencio","callar","deja de leer","deja de hablar"}.Contains(n)) return new Command("silence");
+            if(new[]{"silencio","callar","deja de leer","deja de hablar","para la lectura"}.Contains(n)) return new Command("silence");
             if(new[]{"lee la pantalla","leer pantalla","lee la ventana","ojo bionico"}.Contains(n)) return new Command("readScreen");
             if(new[]{"muestra campos","mostrar campos","busca campos de texto"}.Contains(n)) return new Command("fields");
             if(new[]{"muestra comandos","mostrar comandos","muestra acciones","acciones disponibles"}.Contains(n)) return new Command("actions");
             if(new[]{"pulsa lo seleccionado","dale clic","dale click","hazle clic"}.Contains(n)) return new Command("pressSelection");
-            if(new[]{"borra el campo","borra el texto","limpia el campo","borrar campo"}.Contains(n)) return new Command("clear");
+            if(new[]{"borra el campo","borra el texto","limpia el campo","borrar campo","borra campo"}.Contains(n)) return new Command("clear");
             if(new[]{"clic","click","dar clic","haz clic"}.Contains(n)) return new Command("click");
             if(new[]{"clic derecho","click derecho","anticlick","anticlic","dar anticlick","anti click","menu contextual","haz clic derecho","haz click derecho","clic secundario","siguiente clic derecho","activar clic derecho"}.Contains(n)) return new Command(n.StartsWith("siguiente")||n=="activar clic derecho"?"nextRight":"rightClick");
             if(n=="reproduce"||n=="reproduce el video"||n=="continuar video") return new Command("media","reproducir");
             if(n=="pausa"||n=="pausa el video"||n=="pausar audio") return new Command("media","pausar");
             if((m=Match(n,@"^(?:filtro|activar filtro)\s+(.+)$")).Success) return new Command("filter",m.Groups[1].Value);
-            if(n=="quitar filtro"||n=="sin filtro") return new Command("filter","ninguno");
+            if(n=="quitar filtro"||n=="quita filtro"||n=="sin filtro") return new Command("filter","ninguno");
             if(n=="activar talkback"||n=="desactivar talkback") return new Command("talkback",n.StartsWith("activar")?"on":"off");
             if((m=Match(n,@"^(?:calibrar|calibra|recalibrar|recalibra)(?: (?:el )?cursor)?$")).Success)return new Command("calibrate");
             if(n.StartsWith("control ")) return new Command("mode",n.Substring(8));
@@ -186,11 +271,11 @@ namespace AdaptaPE.Core
             if(n=="mas rapido"||n=="mas lento")return new Command("speed",n.EndsWith("lento")?"down":"up");
             if(n=="cursor preciso"||n=="modo preciso"||n=="cursor rapido"||n=="modo rapido"||n=="perfil agil")return new Command("cursorProfile",n.Contains("preciso")?"preciso":"agil");
             if((m=Match(n,@"^(activar|activa|desactivar|desactiva) (?:el )?(?:clic automatico|click automatico|dwell)$")).Success)return new Command("dwell",m.Groups[1].Value.StartsWith("activa")?"on":"off");
-            if(new[]{"mostrar ajustes","abrir adapta","modo flotante","ocultar adapta","salir de adapta"}.Contains(n)) return new Command("app",n);
-            if(n.StartsWith("panel esquina ")) return new Command("corner",n.Substring(14));
+            if(new[]{"mostrar ajustes","abrir adapta","abre adapta","modo flotante","ocultar adapta","salir de adapta"}.Contains(n)) return new Command("app",n=="abre adapta"?"abrir adapta":n);
+            if((m=Match(n,@"^(?:(?:mueve|coloca|pon) (?:el )?(?:panel|pip) (?:a|en) (?:la )?esquina|panel (?:en (?:la )?)?esquina)\s+(superior izquierda|superior derecha|inferior izquierda|inferior derecha)$")).Success)return new Command("corner",m.Groups[1].Value);
             if((m=Match(original,@"^(?:elige|elijo|escoge|escojo|(?:la )?opci[oó]n|n[uú]mero)\s+(.+)$")).Success) return new Command("choose",m.Groups[1].Value);
             if(Ordinal(n)>=0||n=="siguiente"||n=="anterior") return new Command("choose",n);
-            if((m=Match(original,@"^(?:selecciona|seleccionar|resalta) (?:el )?texto\s+(.+)$")).Success) return new Command("selectText",m.Groups[1].Value);
+            if((m=Match(literal,@"^(?:selecciona|seleccionar|resalta) (?:el )?texto\s+(.+)$")).Success) return new Command("selectText",m.Groups[1].Value);
             if((m=Match(original,@"^(selecciona|seleccionar|resalta|enfoca|enfocar|lee|leer|l[eé]eme|pulsa|presiona|clic en|click en|haz clic en|haz click en|dale clic a|dale click a)\s+(?:(?:el|la) )?(?:(?:bot[oó]n|campo|enlace|elemento) )?(.+)$")).Success) {
                 string verb=Normalize(m.Groups[1].Value);
                 if(verb=="presiona" && KeyNames.TryParse(m.Groups[2].Value)!=null) return new Command("keys",m.Groups[2].Value);
@@ -253,11 +338,27 @@ namespace AdaptaPE.Core
         public void Cancel(){until=0;}
         public string Consume(string text,string word,double time,bool speaking,bool followUp,out bool beep) {
             beep=false; text=(text??"").Trim(); if(text.Length==0)return null;
-            var m=Regex.Match(Commands.Normalize(text),@"(?<![\p{L}\p{N}])"+Regex.Escape(Commands.Normalize(string.IsNullOrWhiteSpace(word)?"computadora":word))+@"(?![\p{L}\p{N}])");
-            string command=m.Success?text.Substring(m.Index+m.Length).TrimStart(' ',',','.',':',';','!','?'):(!speaking&&(time<until||followUp)?text:null);
+            if(double.IsNaN(time)||double.IsInfinity(time)){Cancel();return null;}
+            string name=Commands.Normalize(word);if(name.Length==0)name="computadora";
+            string pattern=name=="computadora"?"(?:computadoras?|computador)":Regex.Escape(name).Replace(@"\ ",@"\s+");
+            var folded=new StringBuilder();var ends=new List<int>();var starts=StringInfo.ParseCombiningCharacters(text);
+            // El índice normalizado no sirve para recortar Unicode o espacios del original.
+            for(int i=0;i<starts.Length;i++){
+                int end=i+1<starts.Length?starts[i+1]:text.Length;string element=text.Substring(starts[i],end-starts[i]);
+                string normalized=string.IsNullOrWhiteSpace(element)?" ":Commands.Normalize(element);
+                foreach(char character in normalized){folded.Append(character);ends.Add(end);}
+            }
+            var m=Regex.Match(folded.ToString(),@"(?<![\p{L}\p{N}])"+pattern+@"(?![\p{L}\p{N}])",RegexOptions.CultureInvariant,TimeSpan.FromMilliseconds(100));
+            string command;
+            if(m.Success){
+                int start=ends[m.Index+m.Length-1];
+                while(start<text.Length&&(char.IsWhiteSpace(text[start])||",.:;!?".IndexOf(text[start])>=0))start++;
+                command=text.Substring(start);
+            }else command=!speaking&&(time<until||followUp)?text:null;
             if(command==null)return null;
-            if(command.Length==0){until=time+8;beep=true;return null;}
-            if(speaking && !new[]{"silence","cancel","stop"}.Contains(Commands.Parse(command).Kind))return null;
+            if(Commands.Prepare(command).Length==0){until=time+8;beep=true;return null;}
+            // Durante la lectura sólo pasan interrupciones y apagar la voz o el micrófono.
+            var parsed=Commands.Parse(command);if(speaking && !(new[]{"silence","cancel","stop"}.Contains(parsed.Kind)||parsed.Kind=="voice"&&parsed.Text=="off"))return null;
             until=0;return command;
         }
     }

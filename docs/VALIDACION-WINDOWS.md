@@ -1,5 +1,11 @@
 # Validación pendiente en Windows
 
+## Bloque de comandos y orientación: 17 de octubre de 2026
+
+889 comprobaciones portables aprobadas sobre código C#: cortesía/conjugaciones, idempotencia, dictado y selección literal, consultas API con signos, negaciones, comandos históricos y siglas PE en nombres. Incluyen activación predeterminada y personal, expiración de ocho segundos, posiciones Unicode, reloj inválido, orientaciones no finitas, ángulos extremos y continuidad del giro al cruzar pi. No se usaron micrófono, cámara, UIA real ni una clave de API.
+
+Compilación cruzada desde macOS de net10.0-windows, net48 y net461 con SDK temporal oficial 10.0.402: cero errores y cero advertencias. No se generó instalador ni se ejecutó WPF en Windows. Voz, cámara, permisos, filtros, interfaz, equipos lentos, poca luz y personas usuarias siguen pendientes.
+
 El usuario confirmó funcionamiento de la entrega 0.2.1. Los cambios de 1.0.0/1.0.1 se compilan desde macOS y todavía necesitan pruebas de voz, cámara, cursor e instalación en Windows. No se han medido CPU, RAM, GPU, latencia o precisión con dispositivos reales.
 
 ## Antes de distribuir

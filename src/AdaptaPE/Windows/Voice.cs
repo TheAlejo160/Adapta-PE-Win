@@ -17,6 +17,7 @@ namespace AdaptaPE.Windows
         SpeechRecognitionEngine engine;WaveInput input;SpeechSynthesizer synth;
         Task localWorker;Prompt currentPrompt;volatile bool active,speaking,starting;bool disposed;
         public bool Active {get{return active||starting;}}public bool Speaking {get{return speaking;}}
+        public Action<bool> SpeechOutput;public Action Wake;
         public Func<bool> FollowUp;public Action<string> Command,Status,Transcript;public Action<double> Level;
         public Voice(Preferences settings){this.settings=settings;}
         public void Start() {
@@ -63,7 +64,7 @@ namespace AdaptaPE.Windows
             System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(()=>{
                 if(!session.Current(token)||!active||string.IsNullOrWhiteSpace(text))return;if(Transcript!=null)Transcript(text);bool beep;
                 string command=wake.Consume(text,settings.WakeWord,time.Elapsed.TotalSeconds,speaking,FollowUp!=null&&FollowUp(),out beep);
-                if(beep){Silence();System.Media.SystemSounds.Asterisk.Play();if(Status!=null)Status("Escuchando comando durante ocho segundos…");}
+                if(beep){Silence();if(Wake!=null)Wake();System.Media.SystemSounds.Asterisk.Play();if(Status!=null)Status("Escuchando comando durante ocho segundos…");}
                 else if(command!=null&&Command!=null)Command(command);
             }));
         }
@@ -97,12 +98,12 @@ namespace AdaptaPE.Windows
         void EnsureSynth() {
             if(synth!=null)return;synth=new SpeechSynthesizer();synth.SetOutputToDefaultAudioDevice();
             var voice=synth.GetInstalledVoices().FirstOrDefault(v=>v.Enabled&&v.VoiceInfo.Culture.TwoLetterISOLanguageName=="es");if(voice!=null)synth.SelectVoice(voice.VoiceInfo.Name);
-            synth.SpeakCompleted+=(s,e)=>{if(ReferenceEquals(e.Prompt,currentPrompt)){speaking=false;currentPrompt=null;}};
+            synth.SpeakCompleted+=(s,e)=>{var dispatcher=System.Windows.Application.Current?.Dispatcher;if(dispatcher!=null&&!dispatcher.HasShutdownStarted)dispatcher.BeginInvoke(new Action(()=>{if(ReferenceEquals(e.Prompt,currentPrompt)){speaking=false;currentPrompt=null;if(SpeechOutput!=null)SpeechOutput(false);}}));};
         }
         public void Say(string text) {
-            if(disposed||string.IsNullOrWhiteSpace(text))return;EnsureSynth();synth.SpeakAsyncCancelAll();speaking=true;currentPrompt=new Prompt(text.Substring(0,Math.Min(6000,text.Length)));synth.SpeakAsync(currentPrompt);
+            if(disposed||string.IsNullOrWhiteSpace(text))return;EnsureSynth();synth.SpeakAsyncCancelAll();speaking=true;currentPrompt=new Prompt(text.Substring(0,Math.Min(6000,text.Length)));try{if(SpeechOutput!=null)SpeechOutput(true);synth.SpeakAsync(currentPrompt);}catch{Silence();throw;}
         }
-        public void Silence(){currentPrompt=null;if(synth!=null)synth.SpeakAsyncCancelAll();speaking=false;}
+        public void Silence(){currentPrompt=null;if(synth!=null)synth.SpeakAsyncCancelAll();speaking=false;if(SpeechOutput!=null)SpeechOutput(false);}
         public void Dispose(){disposed=true;Stop();Silence();if(synth!=null)synth.Dispose();}
     }
 }
