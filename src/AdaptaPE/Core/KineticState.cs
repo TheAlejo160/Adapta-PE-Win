@@ -39,7 +39,8 @@ namespace AdaptaPE.Core
             var result=new MotionResult();
             if(!point.Finite||double.IsNaN(time)||double.IsInfinity(time)){Lost(time);return result;}
             double interval=lastTime.HasValue?time-lastTime.Value:0;
-            if(interval>1.2)Calibrate();if(interval<0||interval>MaxGap){CancelClick();history.Clear();}lastTime=time;
+            // El margen absorbe el redondeo de 1/5 s; la mediana sólo se reinicia en huecos >0,5 s, como antes.
+            if(interval>1.2)Calibrate();if(interval<0||interval>MaxGap+1e-6)CancelClick();if(interval<0||interval>.5)history.Clear();lastTime=time;
             if(!Origin.HasValue) {
                 samples.Add(Tuple.Create(time,point));samples.RemoveAll(p=>time-p.Item1>1.2);
                 if(samples.Count<4||time-samples[0].Item1<.9)return result;
