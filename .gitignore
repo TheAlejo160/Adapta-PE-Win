@@ -39,3 +39,7 @@ assets/prerequisites/*.exe
 
 # Los modelos, DLL de voz, iconos, licencias, fuentes y pruebas sí se versionan.
 # No ignorar globalmente *.dll, *.onnx, *.fst o *.mdl: son recursos necesarios.
+
+# Skills y ajustes locales de agentes de IA
+/.claude/
+/.agents/
